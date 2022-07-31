@@ -16,37 +16,34 @@ export default function WeatherForecast(props) {
     setLoaded(true);
   }
 
-  if (loaded) {
-    return (
-      <div className="WeatherForecast">
-        <div className="row">
-          <div className="col">
-            <WeatherForecastDay data={forecast[0]} />
-          </div>
-          <div className="col">
-            <WeatherForecastDay data={forecast[1]} />
-          </div>
-          <div className="col">
-            <WeatherForecastDay data={forecast[2]} />
-          </div>
-          <div className="col">
-            <WeatherForecastDay data={forecast[3]} />
-          </div>
-          <div className="col">
-            <WeatherForecastDay data={forecast[4]} />
-          </div>
-          <div className="col">
-            <WeatherForecastDay data={forecast[5]} />
-          </div>
-        </div>
-      </div>
-    );
-  } else {
+  function load() {
     let apiKey = "4eb6daa3756f86904454c49ea5eab81e";
     let longitude = props.coordinates.lon;
     let latitude = props.coordinates.lat;
     let apiUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=metric`;
     axios.get(apiUrl).then(handleResponse);
+  }
+
+  if (loaded) {
+    return (
+      <div className="WeatherForecast">
+        <div className="row">
+          {forecast.map(function(dailyForecast, index) {
+            if (index < 5) {
+              return (
+                <div className="col" key={index}>
+                  <WeatherForecastDay data={dailyForecast} />
+                </div>
+              );
+            } else {
+              return null;
+            }
+          })}
+        </div>
+      </div>
+    );
+  } else {
+    load();
 
     return null;
   }
